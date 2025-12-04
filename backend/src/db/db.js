@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 export const connectDataBase = (url) => {
   try {
     if (!url) {
-      throw Error("something went wrong");
+      throw Error("Database URL is required");
     }
 
     const result = mongoose.connect(url);
