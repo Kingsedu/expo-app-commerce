@@ -23,11 +23,16 @@ if (ENV.NODE_ENV === "production") {
     res.sendFile(path.join(staticPath, "index.html"));
   });
 }
-const startServer = () => {
-  connectDataBase(ENV.DB_URL);
-  app.listen(ENV.PORT, () => {
-    console.log(`server is running http://localhost:${ENV.PORT}`);
-  });
+const startServer = async () => {
+  try {
+    await connectDataBase(ENV.DB_URL);
+    app.listen(ENV.PORT, () => {
+      console.log(`server is running http://localhost:${ENV.PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
 };
 
 startServer();
