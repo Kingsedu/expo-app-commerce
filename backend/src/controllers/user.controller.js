@@ -155,8 +155,7 @@ export const removeFromWishlist = async (req, res) => {
 
 export const getWishlist = async (req, res) => {
   try {
-    const user = req.user;
-    res.status(200).json({ wishlist: user.wishlist });
+    const user = await user.findById(req.user._id).populate("wishlist");
     res.status(200).json({ wishlist: user.wishlist });
   } catch (e) {
     console.error("Error in addAddress controllers:", e);
