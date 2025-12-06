@@ -6,10 +6,12 @@ import { connectDataBase } from "./db/db.js";
 import { clerkMiddleware } from "@clerk/express";
 import { serve } from "inngest/express";
 import { inngest, functions } from "./configs/inngest.js";
+import adminRouter from "./routes/admin.routes.js";
+import orderRoutes from "./routes/order.routes.js";
 dotenv.config();
 const app = express();
 app.use(express.json());
-app.use(clerkMiddleware());
+app.use(clerkMiddleware()); // adds auth object under the req => req.auth
 app.use("/api/inngest", serve({ client: inngest, functions }));
 const __dirname = path.resolve();
 console.log(path.join(__dirname, "../admin"));
@@ -27,6 +29,8 @@ if (ENV.NODE_ENV === "production") {
     res.sendFile(path.join(staticPath, "index.html"));
   });
 }
+app.use("/api/admin", adminRouter);
+app.use("/api/admin", orderRoutes);
 const startServer = async () => {
   try {
     await connectDataBase(ENV.DB_URL);
