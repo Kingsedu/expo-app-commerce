@@ -10,6 +10,8 @@ import adminRouter from "./routes/admin.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 import userRouter from "./routes/user.routes.js";
 import order_orderRouter from "./routes/order.order.routes.js";
+import reviewRoutes from "./routes/review.routes.js";
+import productRoute from "./routes/product.routes.js";
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -34,6 +36,8 @@ if (ENV.NODE_ENV === "production") {
 app.use("/api/admin", adminRouter);
 app.use("/api/orders", orderRoutes);
 app.use("/api/users", userRouter);
+app.use("/api/reviews", reviewRoutes);
+app.use("/api/products", productRoute);
 const startServer = async () => {
   try {
     await connectDataBase(ENV.DB_URL);
