@@ -4,7 +4,7 @@ import { Product } from "../models/product.model.js";
 
 export const getCart = async (req, res) => {
   try {
-    const cart = await Cart.findOne({ clerkId: req.user?.clerkId }).populate(
+    let cart = await Cart.findOne({ clerkId: req.user?.clerkId }).populate(
       "items.product"
     );
     if (!cart) {
@@ -25,19 +25,19 @@ export const getCart = async (req, res) => {
 export const addToCart = async (req, res) => {
   try {
     const { productId, quantity = 1 } = req.body;
-    // validate product exitts and has stock
+    // validate product exists and has stock
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
     }
     if (product.stock < quantity) {
-      return res.status(400).josn({ error: "Insufficient stock" });
+      return res.status(400).json({ error: "Insufficient stock" });
     }
     let cart = await Cart.findOne({ clerkId: req.user?.clerkId });
     if (!cart) {
       cart = await Cart.create({
-        user: user._id,
-        clerkId: user.clerkId,
+        user: req.user._id,
+        clerkId: req.user.clerkId,
         items: [],
       });
     }
@@ -45,7 +45,7 @@ export const addToCart = async (req, res) => {
       (item) => item.product.toString() === productId
     );
     if (existingItem) {
-      const newQuantity = existingItem.quantity + 1;
+      const newQuantity = existingItem.quantity + quantity;
       if (product.stock < newQuantity) {
         return res.status(400).json({ error: "Insufficient stock" });
       }
@@ -54,6 +54,7 @@ export const addToCart = async (req, res) => {
       cart.items.push({ product: productId, quantity });
     }
     await cart.save();
+    res.status(200).json({ message: "Item added to cart", cart });
   } catch (e) {
     console.error("Error in addToCart controllers:", e);
     res.status(500).json({ error: "Internal server error" });

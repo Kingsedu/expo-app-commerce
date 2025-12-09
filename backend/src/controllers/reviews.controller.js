@@ -62,7 +62,7 @@ export const createReview = async (req, res) => {
     const totalRating = reviews.reduce((sum, rev) => sum + rev.rating, 0);
     product.averageRating = totalRating / reviews.length;
     product.totalReviews = reviews.length;
-    await product.save();
+
     await product.save();
     res.status(201).json({ message: "Review created successfully", review });
   } catch (e) {
