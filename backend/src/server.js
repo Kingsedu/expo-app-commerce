@@ -17,7 +17,7 @@ import cors from "cors";
 dotenv.config();
 const app = express();
 app.use(cors({ origin: ENV.CLIENT_URL, credentials: true }));
-// credenttials : true allows the browser to send the cookies to tthe server with the reques
+// credentials : true allows the browser to send the cookies to the server with the request
 app.use(express.json());
 app.use(clerkMiddleware()); // adds auth object under the req => req.auth
 app.use("/api/inngest", serve({ client: inngest, functions }));
