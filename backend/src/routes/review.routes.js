@@ -8,5 +8,5 @@ const reviewRouter = express.Router();
 
 reviewRouter.post("/", protectedRoute, createReview);
 // we did not implement this function in the mobile app - in the frontend
-reviewRouter.get("/:reviewId", protectedRoute, deleteReview);
+reviewRouter.delete("/:reviewId", protectedRoute, deleteReview);
 export default reviewRouter;

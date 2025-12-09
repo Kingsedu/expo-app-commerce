@@ -12,8 +12,12 @@ import userRouter from "./routes/user.routes.js";
 import order_orderRouter from "./routes/order.order.routes.js";
 import reviewRoutes from "./routes/review.routes.js";
 import productRoute from "./routes/product.routes.js";
+import cartRouter from "./routes/cart.routes.js";
+import cors from "cors";
 dotenv.config();
 const app = express();
+app.use(cors({ origin: ENV.CLIENT_URL, credentials: true }));
+// credenttials : true allows the browser to send the cookies to tthe server with the reques
 app.use(express.json());
 app.use(clerkMiddleware()); // adds auth object under the req => req.auth
 app.use("/api/inngest", serve({ client: inngest, functions }));
@@ -38,6 +42,8 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/users", userRouter);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/products", productRoute);
+app.use("/api/cart", cartRouter);
+
 const startServer = async () => {
   try {
     await connectDataBase(ENV.DB_URL);

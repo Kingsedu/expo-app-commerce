@@ -6,6 +6,7 @@ import { Product } from "../models/product.model.js";
 export const createReview = async (req, res) => {
   try {
     const { productId, orderId, rating } = req.body;
+
     if (!rating || rating < 1 || rating > 5) {
       return res
         .status(400)
@@ -51,12 +52,17 @@ export const createReview = async (req, res) => {
       orderId,
       rating,
     });
-
     const product = await Product.findById(productId);
+    if (!product) {
+      // Clean up the orphaned review
+      await Review.findByIdAndDelete(review._id);
+      return res.status(404).json({ error: "Product not found" });
+    }
     const reviews = await Review.find({ productId });
     const totalRating = reviews.reduce((sum, rev) => sum + rev.rating, 0);
     product.averageRating = totalRating / reviews.length;
     product.totalReviews = reviews.length;
+    await product.save();
     await product.save();
     res.status(201).json({ message: "Review created successfully", review });
   } catch (e) {
